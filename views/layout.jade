@@ -1,7 +1,42 @@
 doctype 5
-html
+html(lang="ko")
   head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/bootstrap-responsive.min.css')
+    style
+      body {padding-top:60px;}
+    // if lt IE 9
+      script(type='text/javascript', src='http://html5shim.googlecode.com/svn/trunk/html5.js')
+    // Fav and touch icons
+    link(rel='shortcut icon', href='http://twitter.github.com/bootstrap/assets/ico/favicon.ico')
+    link(rel='apple-touch-icon-precomposed', sizes='144x144', href='http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png')
+    link(rel='apple-touch-icon-precomposed', sizes='114x114', href='http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png')
+    link(rel='apple-touch-icon-precomposed', sizes='72x72', href='http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png')
+    link(rel='apple-touch-icon-precomposed', href='http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png')
   body
-    block content
+    div(class="navbar navbar-inverse navbar-fixed-top")
+      div(class="navbar-inner")
+        div(class="container")
+          a(class="btn btn-navbar", data-toggle="collapse", data-target=".nav-collapse")
+            span(class="icon-bar")
+            span(class="icon-bar")
+            span(class="icon-bar")
+          a(class="brand",href="#") node.js bbs
+          div(class="nav-collapse collapse")
+            ul(class="nav")
+              li(class="active")
+                a(href="#") Home
+              li
+                a(href="#about") About
+              li
+                a(href="#contact") Contact
+      div(class="container")
+        block content
+        //
+          h1 Bootstrap starter template
+          p Use this document as a way to quick start any new project. All you get is this message and a barebones HTML document.
+    script(type='text/javascript', src='http://code.jquery.com/jquery.min.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
