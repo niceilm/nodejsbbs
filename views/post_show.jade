@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1= title
+  div.article
+    div.created_at= post.created_at
+    div.title= post.title
+    div.body= post.body
+    div.file
+      a(href='/post/attachment/' + post.file + '/' + post.filepath)= post.file
+    - each comment in post.comments
+      div.comment
+        div.person= comment.person
+        div.comment= comment.comment
+    div
+      form(method='post', action='/post/addComment')
+        input(type='hidden', name='_id', value=post._id.toHexString())
+        div
+          span Author :
+          input(type='text', name='person')
+        div
+          span Comment :
+          textarea(name='comment', rows=5)
+        div
+          button(type='submit') Send

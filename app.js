@@ -4,7 +4,9 @@
 
 var express = require('express')
 	, routes = require('./routes')
+	, fs = require('fs')
 	, user = require('./routes/user')
+	, PostProvider = require('./postprovider').PostProvider
 	, http = require('http')
 	, path = require('path')
 	, app = express()
@@ -21,45 +23,41 @@ if(process.env.VCAP_SERVICES) {
 		"username":"",
 		"password":"",
 		"name":"",
-		"db":"db"
+		"db":"bbs"
 	}
 }
-var generate_mongo_url = function(obj) {
-	obj.hostname = (obj.hostname || 'localhost');
-	obj.port = (obj.port || 27017);
-	obj.db = (obj.db || 'test');
 
+var generateMongoUrl = function(obj) {
+	obj.hostname = (obj.hostname || 'localhost');
 	if(obj.username && obj.password) {
-		return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
+		return obj.username + ":" + obj.password + "@" + obj.hostname;
 	} else {
-		return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
+		return obj.hostname;
 	}
 };
 
-var mongourl = generate_mongo_url(mongo);
+var mongoUrl = generateMongoUrl(mongo);
+var postProvider = new PostProvider(mongoUrl, mongo.port, mongo.db);
+var uploadPath = __dirname + '/uploads';
 
-var record_visit = function(req, res) {
-	/* Connect to the DB and auth */
-	require('mongodb').connect(mongourl, function(err, conn) {
-		conn.collection('ips', function(err, coll) {
-			var object_to_insert = { 'ip':req.connection.remoteAddress, 'ts':new Date() };
+fs.stat(uploadPath, function(err) {
+	if(err) {
+		fs.mkdir(uploadPath, 0744, function(err) {
+			if(err) {
+				throw err;
+			}
+		})
+	}
+});
 
-			coll.insert(object_to_insert, {safe:true}, function(err) {
-				res.writeHead(200, {'Content-Type':'text/plain'});
-				res.write(JSON.stringify(object_to_insert));
-				res.end('\n');
-			});
-		});
-	});
-}
-app.configure(function() {
+app.configure('all', function() {
 	app.set('port', port);
 	app.set('host', host);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	app.use(express.bodyParser());
+	app.use(express.bodyParser({ keepExtensions:true, uploadDir:uploadPath }));
 	app.use(express.methodOverride());
 	app.use(express.cookieParser('your secret here'));
 	app.use(express.session());
@@ -68,14 +66,71 @@ app.configure(function() {
 });
 
 app.configure('development', function() {
+	app.use(express.errorHandler({ dumpExceptions:true, showStack:true }));
+});
+
+app.configure('production', function() {
 	app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
-app.get('/users', user.list);
-app.get('/history', record_visit);
-app.get('/test', function(req, res){
-	res.send("GoodNice");
+app.get('/', function(req, res) {
+	postProvider.findAll(function(err, docs) {
+		res.render('index', {
+			title:'nodejs bbs',
+			posts:docs
+		});
+	});
+});
+
+app.get('/post/new', function(req, res) {
+	res.render('post_new', {
+		title:'New Post'
+	});
+});
+
+app.post('/post/new', function(req, res) {
+	var uploadFile = req.files.file;
+
+	postProvider.save({
+		title:req.param('title'),
+		body:req.param('body'),
+		file:uploadFile.name,
+		filepath:path.basename(uploadFile.path)
+	}, function(err, docs) {
+		res.redirect('/');
+	});
+});
+
+app.get('/post/:id', function(req, res) {
+	postProvider.findById(req.params.id, function(err, post) {
+		res.render('post_show', {
+			title:post.title,
+			post:post
+		});
+	});
+});
+
+app.post('/post/addComment', function(req, res) {
+	postProvider.addCommentToPost(req.param('_id'), {
+		person:req.param('person'),
+		comment:req.param('comment'),
+		create_at:new Date()
+	}, function(err, docs) {
+		res.redirect('/post/' + req.param('_id'))
+	});
+});
+
+app.get('/post/attachment/:filename/:filepath', function(req, res, next) {
+	var filename = req.params.filename
+		, filepath = uploadPath + "/" + req.params.filepath;
+
+	res.download(filepath, encodeURIComponent(filename), function(err) {
+		if(err) {
+			next(err);
+		} else {
+			console.log('transferred %s', filepath);
+		}
+	});
 });
 
 http.createServer(app).listen(app.get('port'), app.get('host'), function() {
