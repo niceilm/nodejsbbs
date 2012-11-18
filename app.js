@@ -6,7 +6,7 @@ var express = require('express')
 	, routes = require('./routes')
 	, fs = require('fs')
 	, user = require('./routes/user')
-	, PostProvider = require('./postprovider').PostProvider
+	, PostProvider = require('./PostProvider').PostProvider
 	, http = require('http')
 	, path = require('path')
 	, app = express()
@@ -29,15 +29,18 @@ if(process.env.VCAP_SERVICES) {
 
 var generateMongoUrl = function(obj) {
 	obj.hostname = (obj.hostname || 'localhost');
+	obj.port = (obj.port || 27017);
+	obj.db = (obj.db || 'test');
+
 	if(obj.username && obj.password) {
-		return obj.username + ":" + obj.password + "@" + obj.hostname;
+		return "mongodb://" + obj.username + ":" + obj.password + "@" + obj.hostname + ":" + obj.port + "/" + obj.db;
 	} else {
-		return obj.hostname;
+		return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
 	}
 };
 
 var mongoUrl = generateMongoUrl(mongo);
-var postProvider = new PostProvider(mongoUrl, mongo.port, mongo.db);
+var postProvider = new PostProvider(mongoUrl);
 var uploadPath = __dirname + '/uploads';
 
 fs.stat(uploadPath, function(err) {
