@@ -29,7 +29,15 @@ html(lang="ko")
             ul(class="nav")
               li
                 a(href="/post/new") New
+              - if(!everyauth.loggedIn)
+                li
+                  a(href="/auth/facebook") login
+              - if(everyauth.loggedIn)
+                li
+                  a(href="/logout") logout
       div.container
+        - if(everyauth.facebook)
+          div= everyauth.facebook.user.username
         block content
     script(type='text/javascript', src='http://code.jquery.com/jquery.min.js')
     script(type='text/javascript', src='/js/bootstrap.min.js')

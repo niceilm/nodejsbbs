@@ -1,12 +1,8 @@
-var mongojs = require('mongojs');
-var ObjectId = mongojs.ObjectId;
+var db = require('./db');
+var ObjectId = db.ObjectId;
 
-PostProvider = function (databaseURL) {
-	this.db = mongojs(databaseURL, ['posts']);
-};
-
-PostProvider.prototype.findAll = function (callback) {
-	this.db.posts.find().toArray(function (err, results) {
+var findAll = function(callback) {
+	db.posts.find().toArray(function(err, results) {
 		if(err) {
 			callback(err);
 		} else {
@@ -15,8 +11,8 @@ PostProvider.prototype.findAll = function (callback) {
 	});
 };
 
-PostProvider.prototype.findById = function (id, callback) {
-	this.db.posts.findOne({_id:ObjectId(id)}, function (err, result) {
+var findById = function(id, callback) {
+	db.posts.findOne({_id:ObjectId(id)}, function(err, result) {
 		if(err) {
 			callback(err);
 		} else {
@@ -25,32 +21,31 @@ PostProvider.prototype.findById = function (id, callback) {
 	});
 };
 
-PostProvider.prototype.save = function (posts, callback) {
+var save = function(posts, callback) {
 	if(typeof(posts.length) === "undefined") {
 		posts = [posts];
 	}
 
-	for(var i = 0; i < posts.length; i++) {
+	for(var i = 0 ; i < posts.length ; i++) {
 		var article = posts[i];
 		article.created_at = new Date();
 		if(article.comments === undefined) {
 			article.comments = [];
 		}
-		for(var j = 0; j < article.comments.length; j++) {
+		for(var j = 0 ; j < article.comments.length ; j++) {
 			article.comments[j].created_at = new Date();
 		}
 	}
 
-	this.db.posts.insert(posts, function () {
+	db.posts.insert(posts, function() {
 		callback(null, posts);
 	});
 };
 
-PostProvider.prototype.addCommentToPost = function (postId, comment, callback) {
-	this.db.posts.update({
-		_id:ObjectId(postId)},
-		{"$push":{comments:comment}
-	}, function (err, article) {
+var addCommentToPost = function(postId, comment, callback) {
+	db.posts.update({
+		_id:ObjectId(postId)}, {"$push":{comments:comment}
+	}, function(err, article) {
 		if(err) {
 			callback(err);
 		} else {
@@ -59,4 +54,38 @@ PostProvider.prototype.addCommentToPost = function (postId, comment, callback) {
 	});
 };
 
-exports.PostProvider = PostProvider;
+var removePost = function(postId, username, cb) {
+	db.posts.findOne({_id:ObjectId(postId)}, function(err, post) {
+		if(err) {
+			throw {name:'db error', message:'error message'};
+		}
+		if(!post.username || username === post.username) {
+			db.posts.remove({_id:ObjectId(postId)}, cb);
+		} else {
+			cb({name:'auth error', message:'권한이 없습니다.'});
+		}
+	});
+};
+
+var updatePost = function(postId, username, post, cb) {
+	db.posts.findOne({_id:ObjectId(postId)}, function(err, dbPost) {
+		if(username === post.username || !post.username) {
+			post.file = post.file || dbPost.file;
+			post.filepath = post.filepath || dbPost.filepath;
+
+			db.posts.update({_id:ObjectId(postId)}, {
+				'$set':post
+			}, cb);
+		}else{
+			cb({name:'auth error', message:'권한이 없습니다.'});
+		}
+	});
+
+};
+
+exports.findAll = findAll;
+exports.findById = findById;
+exports.save = save;
+exports.addCommentToPost = addCommentToPost;
+exports.removePost = removePost;
+exports.updatePost = updatePost;

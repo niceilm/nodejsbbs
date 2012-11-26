@@ -3,7 +3,11 @@ extends layout
 block content
   h1= title
   div.article
+    form(method='post', action='/post/'+post._id)
+      input(type='hidden', name='_method', value='delete')
+      button.btn 삭제
     div.created_at= post.created_at
+    div.username= post.username
     div.title= post.title
     div.body= post.body
     div.file
