@@ -2,21 +2,7 @@
  * database 관련
  */
 var mongojs = require('mongojs');
-
-if(process.env.VCAP_SERVICES) {
-	var env = JSON.parse(process.env.VCAP_SERVICES);
-	var mongo = env['mongodb-2.0'][0]['credentials'];
-} else {
-	var mongo = {
-		"hostname":"localhost",
-		"port":27017,
-		"username":"",
-		"password":"",
-		"name":"",
-		"db":"bbs"
-	}
-}
-
+var config = require('./config');
 
 var generateMongoUrl = function (obj) {
 	obj.hostname = (obj.hostname || 'localhost');
@@ -29,7 +15,7 @@ var generateMongoUrl = function (obj) {
 		return "mongodb://" + obj.hostname + ":" + obj.port + "/" + obj.db;
 	}
 };
-var db = mongojs(generateMongoUrl(mongo), ["posts", "users"]);
+var db = mongojs(generateMongoUrl(config.mongo), ["posts", "users"]);
 
 module.exports = db;
 module.exports.ObjectId = mongojs.ObjectId;
