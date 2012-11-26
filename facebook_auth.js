@@ -43,7 +43,7 @@ everyauth.everymodule.findUserById(function(req, userId, callback) {
 /**
  * Check cedentials on admin public action
  */
-module.exports.checkCredentials = function (req, res, next) {
+module.exports = checkCredentials = function (req, res, next) {
 	if (!req.session.auth) {
 		// Redirect the user to the login page
 		return res.redirect('/auth/facebook');

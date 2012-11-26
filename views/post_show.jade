@@ -7,7 +7,9 @@ block content
       input(type='hidden', name='_method', value='delete')
       button.btn 삭제
     div.created_at= post.created_at
-    div.username= post.username
+    div.username
+      span 이름
+      span= post.username
     div.title= post.title
     div.body= post.body
     div.file
