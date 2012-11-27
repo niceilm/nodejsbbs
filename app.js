@@ -6,10 +6,10 @@ var fs = require('fs');
 var http = require('http');
 var path = require('path');
 var everyauth = require('everyauth');
-var facebook_auth = require('./filter/facebook_auth');
-var pageable = require('./filter/pageable');
-var routes = require('./routes');
+var facebook_auth = require('./lib/facebook_auth');
+var pageable = require('./lib/pageable');
 var config = require('./config');
+var routes = require('./routes');
 var app = express();
 everyauth.debug = true;
 

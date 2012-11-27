@@ -1,6 +1,6 @@
-var postProvider = require('../post_provider');
-var path = require('path');
+var postProvider = require('../lib/post_provider');
 var config = require('../config');
+var path = require('path');
 
 /*
  * GET home page.
