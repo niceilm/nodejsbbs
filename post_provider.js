@@ -1,24 +1,20 @@
+/**
+ * @description 포스트 처리 모듈
+ * @type {*}
+ */
 var db = require('./db');
 var ObjectId = db.ObjectId;
 
 var findAll = function(callback) {
-	db.posts.find().toArray(function(err, results) {
-		if(err) {
-			callback(err);
-		} else {
-			callback(null, results);
-		}
-	});
+	db.posts.find(callback);
+};
+
+var findByPage = function(limit, skip, callback) {
+	db.posts.find().limit(limit).skip(skip, callback);
 };
 
 var findById = function(id, callback) {
-	db.posts.findOne({_id:ObjectId(id)}, function(err, result) {
-		if(err) {
-			callback(err);
-		} else {
-			callback(null, result);
-		}
-	});
+	db.posts.findOne({_id:ObjectId(id)}, callback);
 };
 
 var save = function(posts, callback) {
@@ -37,21 +33,13 @@ var save = function(posts, callback) {
 		}
 	}
 
-	db.posts.insert(posts, function() {
-		callback(null, posts);
-	});
+	db.posts.insert(posts, callback);
 };
 
 var addCommentToPost = function(postId, comment, callback) {
 	db.posts.update({
 		_id:ObjectId(postId)}, {"$push":{comments:comment}
-	}, function(err, article) {
-		if(err) {
-			callback(err);
-		} else {
-			callback(null, article);
-		}
-	});
+	}, callback);
 };
 
 var removePost = function(postId, username, cb) {
@@ -76,14 +64,14 @@ var updatePost = function(postId, username, post, cb) {
 			db.posts.update({_id:ObjectId(postId)}, {
 				'$set':post
 			}, cb);
-		}else{
+		} else {
 			cb({name:'auth error', message:'권한이 없습니다.'});
 		}
 	});
-
 };
 
 exports.findAll = findAll;
+exports.findByPage = findByPage;
 exports.findById = findById;
 exports.save = save;
 exports.addCommentToPost = addCommentToPost;
