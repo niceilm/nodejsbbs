@@ -1,0 +1,38 @@
+mixin paginate(page, baseUrl)
+	- var number = page.number || 1;
+	- var size = page.size || 10;
+	- var total = page.total || 0;
+	- var list = page.list || 5;
+	- var lastPage = Math.ceil(total/size);
+	- var thisPageList = Math.ceil(number/list);
+	- var lastPageList = Math.ceil(lastPage/list);
+	- var firstPageOfThisPageList = (thisPageList-1) * list + 1;
+	- var lastPageOfThisPageList = Math.min(thisPageList * list, lastPage);
+	- var prev = (thisPageList-1) * list;
+	- var next = thisPageList * list + 1;
+	- if(total === 0)
+		no page
+	- else if(total === 1)
+		span 1
+	- else
+		- if(number>1)
+			a(href='#{baseUrl}?page.number=1') 처음
+		- else
+			span 처음
+		- if(thisPageList > 1)
+			a(href='#{baseUrl}?page.number=#{prev}') 이전
+		- else
+			span 이전
+		- for(var i=firstPageOfThisPageList ; i<=lastPageOfThisPageList ; i++)
+			- if(i != number)
+				a(href='#{baseUrl}?page.number=#{i}')= i
+			- else
+				span= i
+		- if(thisPageList < lastPageList)
+			a(href='#{baseUrl}?page.number=#{next}') 다음
+		- else
+			span 다음
+		- if(number < lastPage)
+			a(href='#{baseUrl}?page.number=#{lastPage}') 끝
+		- else
+			span 끝

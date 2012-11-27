@@ -6,7 +6,8 @@ var fs = require('fs');
 var http = require('http');
 var path = require('path');
 var everyauth = require('everyauth');
-var facebook_auth = require('./facebook_auth');
+var facebook_auth = require('./filter/facebook_auth');
+var pageable = require('./filter/pageable');
 var routes = require('./routes');
 var config = require('./config');
 var app = express();
@@ -45,7 +46,7 @@ fs.stat(config.uploadPath, function(err) {
 	}
 });
 
-app.get('/', routes.index);
+app.get('/', pageable, routes.index);
 app.get('/post/new', facebook_auth, routes.new);
 app.post('/post/new', facebook_auth, routes.newPost);
 app.get('/post/:id', routes.view);

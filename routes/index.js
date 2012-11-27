@@ -6,17 +6,13 @@ var config = require('../config');
  * GET home page.
  */
 exports.index = function(req, res) {
-//	postProvider.findAll(function(err, docs) {
-//		res.render('index', {
-//			title:'nodejs bbs',
-//			posts:docs
-//		});
-//	});
-	var page = req.params.page || 1;
-	postProvider.findByPage(10 * page, page, function(err, docs) {
+	var page = req.param('page');
+	postProvider.findByPage(page, function(err, results) {
+		page.total = results[1];
 		res.render('index', {
 			title:'nodejs bbs',
-			posts:docs
+			posts:results[0],
+			page:page
 		});
 	});
 };

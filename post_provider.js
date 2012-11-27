@@ -4,13 +4,21 @@
  */
 var db = require('./db');
 var ObjectId = db.ObjectId;
+var async = require('async');
 
 var findAll = function(callback) {
 	db.posts.find(callback);
 };
 
-var findByPage = function(limit, skip, callback) {
-	db.posts.find().limit(limit).skip(skip, callback);
+var findByPage = function(page, callback) {
+	async.parallel([
+		function(callback){
+			db.posts.find().sort({_id:-1}).skip((page.number-1)*page.size).limit(page.size, callback);
+		},
+		function(callback){
+			db.posts.count(callback);
+		}
+	], callback);
 };
 
 var findById = function(id, callback) {

@@ -1,7 +1,9 @@
 extends layout
+include mixin/common_ui.jade
 
 block content
   h1= title
+  span=page.total
   #articles
     - each post in posts
       div.post
@@ -9,3 +11,4 @@ block content
         div.title
           a(href="/post/"+post._id)= post.title
         div.body= post.body
+    mixin paginate(page, '/')
