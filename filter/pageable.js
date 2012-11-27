@@ -1,3 +1,10 @@
+/**
+ * pageable 처리
+ * @param req
+ * @param res
+ * @param next
+ * @return {*}
+ */
 module.exports = function(req, res, next) {
 	req.params.page = {
 		number : req.param('page.number') || 1,
