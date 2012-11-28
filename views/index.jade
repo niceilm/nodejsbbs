@@ -3,7 +3,7 @@ include mixin/common_ui.jade
 
 block content
   h1= title
-  span=page.total
+  span 총 게시물수 #{page.total}
   #articles
     - each post in posts
       div.post
