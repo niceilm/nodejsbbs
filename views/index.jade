@@ -2,13 +2,25 @@ extends layout
 include mixin/common_ui.jade
 
 block content
-  h1= title
+  h1 bbs
   span 총 게시물수 #{page.total}
-  #articles
-    - each post in posts
-      div.post
-        div.created_at= post.created_at
-        div.title
-          a(href="/post/"+post._id)= post.title
-        div.body= post.body
+  table(style='width:100%;min-width:320px;text-align:center',cellspacing='0',border='1')
+    col(width='100px')
+    col(width='*')
+    col(width='*')
+    col(width='100px')
+    tr
+      th 번호
+      th 게시물제목
+      th 작성자
+      th 조회수
+    - each post, i in posts
+      tr
+        td #{i+1}
+        td
+          .ellipsis(style="width:300px")
+            a(href="/post/"+post._id, title='#{post.title}')= post.title
+        td= post.username
+        td #{post.count||0}
+  div(style='text-align:center')
     mixin paginate(page, '/')

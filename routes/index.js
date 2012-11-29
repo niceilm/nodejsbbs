@@ -1,6 +1,7 @@
 var postProvider = require('../lib/post_provider');
 var config = require('../config');
 var path = require('path');
+var async = require('async');
 
 /*
  * GET home page.
@@ -40,7 +41,15 @@ exports.newPost = function(req, res) {
 };
 
 exports.view = function(req, res) {
-	postProvider.findById(req.params.id, function(err, post) {
+	async.parallel([
+		function(cb){
+			postProvider.addCount(req.params.id, cb);
+		},
+		function(cb){
+			postProvider.findById(req.params.id, cb);
+		}
+	], function(err, results) {
+		var post = results[1];
 		res.render('post_show', {
 			title:post.title,
 			post:post

@@ -8,6 +8,7 @@ var path = require('path');
 var everyauth = require('everyauth');
 var facebook_auth = require('./lib/facebook_auth');
 var pageable = require('./lib/pageable');
+var property = require('./lib/property');
 var config = require('./config');
 var routes = require('./routes');
 var app = express();
@@ -19,6 +20,7 @@ everyauth.debug = true;
 app.configure(function() {
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
+	app.locals(property);
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser({ keepExtensions:true, uploadDir:config.uploadPath }));
