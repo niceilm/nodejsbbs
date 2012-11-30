@@ -4,7 +4,7 @@ include mixin/common_ui.jade
 block content
   h1 bbs
   form(method='get')
-    input(type='text', name='title')
+    input(type='text', name='query')
     input.btn(type='submit', value='search', style='margin:-10px 0 0 5px')
   span 총 게시물수 #{page.total}
   table(style='width:100%;min-width:320px;text-align:center',cellspacing='0',border='1')

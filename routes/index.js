@@ -8,7 +8,7 @@ var async = require('async');
  */
 exports.index = function(req, res) {
 	var search = {
-		title : req.param('title') || '',
+		query : req.param('query') || '',
 		page : req.param('page')
 	};
 	postProvider.findByPage(search, function(err, results) {
