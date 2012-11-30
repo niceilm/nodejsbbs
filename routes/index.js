@@ -7,14 +7,16 @@ var async = require('async');
  * GET home page.
  */
 exports.index = function(req, res) {
-	var page = req.param('page');
-	postProvider.findByPage(page, function(err, results) {
-		console.log(results);
-		page.total = results[1];
+	var search = {
+		title : req.param('title') || '',
+		page : req.param('page')
+	};
+	postProvider.findByPage(search, function(err, results) {
+		search.page.total = results[1];
 		res.render('index', {
 			title:'nodejs bbs',
 			posts:results[0],
-			page:page
+			page:search.page
 		});
 	});
 };
