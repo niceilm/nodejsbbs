@@ -8,7 +8,6 @@ var path = require('path');
 var everyauth = require('everyauth');
 var facebook_auth = require('./lib/facebook_auth');
 var pageable = require('./lib/pageable');
-var property = require('./lib/property');
 var config = require('./config');
 var routes = require('./routes');
 var app = express();
@@ -20,10 +19,10 @@ everyauth.debug = true;
 app.configure(function() {
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
-	app.locals(property);
+	app.locals(config);
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	app.use(express.bodyParser({ keepExtensions:true, uploadDir:config.uploadPath }));
+	app.use(express.bodyParser({ keepExtensions:true, uploadDir:config.express.uploadPath }));
 	app.use(express.methodOverride());
 	app.use(express.cookieParser('bbs secret'));
 	app.use(express.session());
@@ -38,9 +37,9 @@ app.configure('production', function() {
 	app.use(express.errorHandler());
 });
 
-fs.stat(config.uploadPath, function(err) {
+fs.stat(config.express.uploadPath, function(err) {
 	if(err) {
-		fs.mkdir(config.uploadPath, 0744, function(err) {
+		fs.mkdir(config.express.uploadPath, 0744, function(err) {
 			if(err) {
 				throw err;
 			}

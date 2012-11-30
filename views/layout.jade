@@ -42,7 +42,7 @@ html(lang='ko')
         block content
     script(type='text/javascript', src='#{urls['jquery.min.js']}')
     script(type='text/javascript', src='#{urls['bootstrap.min.js']}')
-    - if()
+    - if(phase === 'real')
       script(type='text/javascript', src='http://wcs.naver.net/wcslog.js')
       script(type='text/javascript')
         if(!wcs_add) var wcs_add = {};

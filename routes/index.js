@@ -9,6 +9,7 @@ var async = require('async');
 exports.index = function(req, res) {
 	var page = req.param('page');
 	postProvider.findByPage(page, function(err, results) {
+		console.log(results);
 		page.total = results[1];
 		res.render('index', {
 			title:'nodejs bbs',
