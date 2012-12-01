@@ -1,31 +1,36 @@
 extends layout
+include mixin/common_ui.jade
 
 block content
-  h1= title
-  div.article
-    form(method='post', action='/post/'+post._id)
-      input(type='hidden', name='_method', value='delete')
-      button.btn 삭제
-    div.created_at= post.created_at
-    div.username
-      span 이름
-      span= post.username
-    div.title= post.title
-    div.body= post.body
-    div.file
-      a(href='/post/attachment/' + post.file + '/' + post.filepath)= post.file
-    - each comment in post.comments
-      div.comment
-        div.person= comment.person
-        div.comment= comment.comment
-    div
-      form(method='post', action='/post/addComment')
-        input(type='hidden', name='_id', value=post._id.toHexString())
-        div
-          span Author :
-          input(type='text', name='person')
-        div
-          span Comment :
-          textarea(name='comment', rows=5)
-        div
-          button(type='submit') Send
+  div(data-role='header', data-position='fixed')
+    a(data-rel='back', data-icon='delete') back
+    h1= title
+    mixin navigation
+  div(data-role='content')
+    div.content-primary
+      form(method='post', action='/post/'+post._id)
+        input(type='hidden', name='_method', value='delete')
+        button(data-role='button') 삭제
+      div.created_at= post.created_at
+      div.username
+        span 이름
+        span= post.username
+      div.title= post.title
+      div.body= post.body
+      div.file
+        a(href='/post/attachment/' + post.file + '/' + post.filepath)= post.file
+      - each comment in post.comments
+        div.comment
+          div.person= comment.person
+          div.comment= comment.comment
+      div
+        form(method='post', action='/post/addComment')
+          input(type='hidden', name='_id', value=post._id.toHexString())
+          div
+            span Author :
+            input(type='text', name='person')
+          div
+            span Comment :
+            textarea(name='comment', rows=5)
+          div
+            button(type='submit') Send

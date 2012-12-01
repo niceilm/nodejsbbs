@@ -1,38 +1,55 @@
 mixin paginate(page, baseUrl)
-	- var number = page.number || 1;
-	- var size = page.size || 10;
-	- var total = page.total || 0;
-	- var list = page.list || 5;
-	- var lastPage = Math.ceil(total/size);
-	- var thisPageList = Math.ceil(number/list);
-	- var lastPageList = Math.ceil(lastPage/list);
-	- var firstPageOfThisPageList = (thisPageList-1) * list + 1;
-	- var lastPageOfThisPageList = Math.min(thisPageList * list, lastPage);
-	- var prev = (thisPageList-1) * list;
-	- var next = thisPageList * list + 1;
-	- if(total === 0)
-		no page
-	- else if(total === 1)
-		span 1
-	- else
-		- if(number>1)
-			a(href='#{baseUrl}?page.number=1') 처음
-		- else
-			span 처음
-		- if(thisPageList > 1)
-			a(href='#{baseUrl}?page.number=#{prev}') 이전
-		- else
-			span 이전
-		- for(var i=firstPageOfThisPageList ; i<=lastPageOfThisPageList ; i++)
-			- if(i != number)
-				a(href='#{baseUrl}?page.number=#{i}')= i
-			- else
-				span= i
-		- if(thisPageList < lastPageList)
-			a(href='#{baseUrl}?page.number=#{next}') 다음
-		- else
-			span 다음
-		- if(number < lastPage)
-			a(href='#{baseUrl}?page.number=#{lastPage}') 끝
-		- else
-			span 끝
+  - var number = page.number || 1;
+  - var size = page.size || 10;
+  - var total = page.total || 0;
+  - var list = page.list || 5;
+  - var lastPage = Math.ceil(total/size);
+  - var thisPageList = Math.ceil(number/list);
+  - var lastPageList = Math.ceil(lastPage/list);
+  - var firstPageOfThisPageList = (thisPageList-1) * list + 1;
+  - var lastPageOfThisPageList = Math.min(thisPageList * list, lastPage);
+  - var prev = (thisPageList-1) * list;
+  - var next = thisPageList * list + 1;
+  div(data-role="controlgroup", data-type="horizontal")
+    - if(total === 0)
+      //span(data-role='button', data-inline='true', data-mini='true') no page
+    - else if(total === 1)
+      button(data-role='button', data-inline='true', data-mini='true', disabled='disabled') 1
+    - else
+      - if(number>1)
+        a(href='#{baseUrl}?page.number=1', data-role='button', data-inline='true', data-mini='true', data-icon='arrow-l') start
+      - else
+        button(data-role='button', data-inline='true', data-mini='true', data-icon='arrow-l', disabled='disabled') start
+      - if(thisPageList > 1)
+        a(href='#{baseUrl}?page.number=#{prev}', data-role='button', data-inline='true', data-mini='true', data-icon='arrow-l') prev
+      - else
+        //button(data-role='button', data-inline='true', data-mini='true', data-icon='arrow-l', disabled='disabled') prev
+      - for(var i=firstPageOfThisPageList ; i<=lastPageOfThisPageList ; i++)
+        - if(i != number)
+          a(href='#{baseUrl}?page.number=#{i}', data-role='button', data-inline='true', data-mini='true')= i
+        - else
+          button(data-role='button', data-inline='true', data-mini='true', disabled='disabled')= i
+      - if(thisPageList < lastPageList)
+        a(href='#{baseUrl}?page.number=#{next}', data-role='button', data-inline='true', data-mini='true', data-icon='arrow-r', data-iconpos='right') next
+      - else
+        //button(data-role='button', data-inline='true', data-mini='true', data-icon='arrow-r', data-iconpos='right', disabled='disabled') next
+      - if(number < lastPage)
+        a(href='#{baseUrl}?page.number=#{lastPage}', data-role='button', data-inline='true', data-mini='true', data-icon='arrow-r', data-iconpos='right') end
+      - else
+        button(data-role='button', data-inline='true', data-mini='true', data-icon='arrow-r', data-iconpos='right', disabled='disabled') end
+
+mixin navigation
+  div(data-role="navbar", class="ui-navbar, ui-mini", role="navigation")
+    ul
+      - if(everyauth.facebook)
+        li
+          a(href='')= everyauth.facebook.user.username
+      - if(everyauth.loggedIn)
+        li
+          a(href='/post/new', data-rel='dialog') New
+      - if(!everyauth.loggedIn)
+        li
+          a(href='/auth/facebook', data-ajax='false') login
+      - if(everyauth.loggedIn)
+        li
+          a(href='/logout') logout

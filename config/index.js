@@ -2,6 +2,7 @@
  * service configuration
  */
 
+module.exports.format = require('./format');
 module.exports.urls = require('./urls');
 module.exports.facebook = require('./facebook');
 module.exports.express = require('./express');

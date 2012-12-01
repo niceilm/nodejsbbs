@@ -1,16 +1,16 @@
-extends layout
-
-block content
-  h1= title
-  form(method='post', action='/post/new', enctype="multipart/form-data")
-    div
-      label(for='title') 제목
-      input(type='text', name='title', id='title')
-    div
-      label(for='body') 내용
-      textarea(name='body', id='body')
-    div
-      label(for='file') 파일
-      input(type='file', name='file')
-    div
-      button(type='submit', class='btn') submit
+div(data-role='page', data-theme='d')
+  div(data-role='header')
+    h1= title
+  div(data-role='content')
+    form(method='post', action='/post/new', enctype='multipart/form-data',data-ajax='false')
+      div
+        label.ui-hidden-accessible(for='title') 제목 :
+        input(type='text', name='title', id='title', placeholder='제목')
+      div
+        label.ui-hidden-accessible(for='body') 내용 :
+        textarea(name='body', id='body', placeholder='내용')
+      div
+        label.ui-hidden-accessible(for='file') 파일 :
+        input(type='file', name='file')
+      div
+        button(type='submit', class='btn') submit

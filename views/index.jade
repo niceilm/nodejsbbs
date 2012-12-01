@@ -2,28 +2,22 @@ extends layout
 include mixin/common_ui.jade
 
 block content
-  h1 bbs
-  form(method='get')
-    input(type='text', name='query')
-    input.btn(type='submit', value='search', style='margin:-10px 0 0 5px')
-  span 총 게시물수 #{page.total}
-  table(style='width:100%;min-width:320px;text-align:center',cellspacing='0',border='1')
-    col(width='100px')
-    col(width='*')
-    col(width='*')
-    col(width='100px')
-    tr
-      th 번호
-      th 게시물제목
-      th 작성자
-      th 조회수
-    - each post, i in posts
-      tr
-        td #{i+1}
-        td
-          .ellipsis(style="width:300px")
-            a(href="/post/"+post._id, title='#{post.title}')= post.title
-        td= post.username
-        td #{post.count||0}
-  div(style='text-align:center')
-    mixin paginate(page, '/')
+  div(data-role='header', data-position='fixed')
+    a(data-rel='back', data-icon='delete') back
+    h1= title
+    mixin navigation
+  div(data-role='content')
+    div.content-primary
+    form(method='get')
+      label.ui-hidden-accessible(for='search-basic') Search Input:
+      input(type='search', name='query', id='search-basic')
+    ul(data-role='listview', data-inset='true')
+      li(data-role="list-divider") 총 게시물수 #{format.number(page.total)}
+      - each post, i in posts
+        li
+          a(href='/post/#{post._id}', title='#{post.title}')
+            h1 #{post.title}
+            p #{post.username} #{format.date(post.created_at)}
+            span.ui-li-count.ui-btn-up-c.ui-btn-corner-all #{format.number(post.count||0)}
+    div(style='text-align:center')
+      mixin paginate(page, '/')

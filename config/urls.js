@@ -37,6 +37,16 @@ var urls = {
 	'bootstrap.min.js':[
 		'/js/bootstrap.min.js',
 		'//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.1/bootstrap.min.js'
+	],
+	'jquery.mobile-1.2.0.min.js':[
+		'/js/jquery.mobile-1.2.0.min.js',
+		'http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js'
+	],
+	'jquery.mobile-1.2.0.min.css':[
+		'http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css'
+	],
+	'jquery.mobile.custom.js':[
+		'/js/jquery.mobile.custom.js'
 	]
 };
 
