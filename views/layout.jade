@@ -8,6 +8,7 @@ html(lang='ko')
     title= title
     link(rel='stylesheet', href='#{urls['jquery.mobile-1.2.0.min.css']}')
     link(rel='stylesheet', href='/css/default.css')
+    link(rel='stylesheet', href='/css/path_menu_style.css')
     // if lt IE 9
       script(type='text/javascript', src='#{urls['html5.js']}')
     // Fav and touch icons
@@ -19,9 +20,60 @@ html(lang='ko')
     script(type='text/javascript', src='#{urls['jquery.min.js']}')
     script(type='text/javascript', src='#{urls['jquery.mobile.custom.js']}')
     script(type='text/javascript', src='#{urls['jquery.mobile-1.2.0.min.js']}')
+    style
+      #popupPanel-popup {
+        right: 0 !important;
+        left: auto !important;
+      }
+      #popupPanel {
+        width: 200px;
+        border: 1px solid #000;
+        border-right: none;
+        background: rgba(0,0,0,.5);
+        margin: -1px 0;
+      }
+      #popupPanel .ui-btn {
+        margin: 2em 15px;
+      }
   body
     div(data-role='page', data-theme='d')
       block content
+      a(href='#popupPanel', data-rel="popup", data-transition="slide", data-position-to="window", data-role="button") click
+      div(data-role="popup", id="popupPanel", data-corners="false", data-theme="none", data-shadow="false", data-tolerance="0,0")
+        button(data-theme="a", data-icon="back", data-mini="true") Back
+        button(data-theme="a", data-icon="grid", data-mini="true") Menu
+        button(data-theme="a", data-icon="search", data-mini="true") Search
+      a(id="centerbutton", href="") +
+      ul.circles
+        li
+          a(href="", title="")
+            span.camera
+        li
+          a(href="", title="")
+            span.location
+        li
+          a(href="", title="")
+            span.music
+        li
+          a(href="", title="")
+            span.chat
+        li
+          a(href="", title="")
+            span.moon
+    script
+      $( "#popupPanel" ).on({
+        popupbeforeposition: function() {
+          var h = $( window ).height();
+          $( "#popupPanel" ).css( "height", h );
+        }
+      });
+      jQuery(document).ready(function($) {
+        $('#centerbutton').click(function(e) {
+          e.preventDefault();
+          $('.circles li a').toggleClass('out');
+          $(this).toggleClass('centerbuttonon');
+        });
+      });
     - if(phase === 'real')
       script(type='text/javascript', src='http://wcs.naver.net/wcslog.js')
       script(type='text/javascript')

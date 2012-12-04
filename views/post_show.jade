@@ -5,7 +5,6 @@ block content
   div(data-role='header', data-position='fixed')
     a(data-rel='back', data-icon='delete') back
     h1= title
-    mixin navigation
   div(data-role='content')
     div.content-primary
       form(method='post', action='/post/'+post._id)
@@ -18,7 +17,7 @@ block content
       div.title= post.title
       div.body= post.body
       div.file
-        a(href='/post/attachment/' + post.file + '/' + post.filepath)= post.file
+        a(href='/post/attachment/#{post.file}/#{post.filepath}', data-ajax='false')= post.file
       - each comment in post.comments
         div.comment
           div.person= comment.person
